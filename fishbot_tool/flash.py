@@ -57,3 +57,4 @@ class Tool():
         """
         docker run -it --rm --privileged -v=/dev:/dev  -v `pwd`:`pwd` -w `pwd` fishros2/fishbot-tool esptool.py -p /dev/ttyUSB0 -b 460800 --before default_reset --after hard_reset --chip esp8266  write_flash --flash_mode dio --flash_size detect --flash_freq 40m 0x1000 fishbot_laser_control_v1.0.0.2022-08-05.bin
         """
+        pass

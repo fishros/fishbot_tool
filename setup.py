@@ -32,7 +32,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'fishbot_tool = fishbot_tool.main:cli',
+            'fishbot_tool = fishbot_tool.main:main',
         ]
     },
     packages=['fishbot_tool'],
