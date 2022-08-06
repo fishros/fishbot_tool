@@ -1,37 +1,52 @@
-from prompt_toolkit.completion import WordCompleter
-from prompt_toolkit import prompt
+from curses import flash
 from rich import print
+from fishbot_tool.flash import Tool as ToolEspFlash
+from prompt_toolkit.completion import NestedCompleter
+from prompt_toolkit import prompt
+from prompt_toolkit import prompt
+from prompt_toolkit.formatted_text import HTML
 
-from tools.flash import Tool as ToolEspFlash
+
+def bottom_toolbar():
+    return HTML('小鱼提示: exit:退出 help:查看帮助')
+
 
 tool_map = {
     "flash": ToolEspFlash(),
 }
 
 help_hint = f"""
-- flash : 烧录FishBot相关固件 (主板&雷达)
-- config: 配置FishBot
-- help  : 查看帮助信息
-- exit  : 退出命令行交互模式
+- flash : 烧录FishBot固件 (主板&雷达)
 """
+# - config: 配置FishBot
 
 
 def command_parse(cmd: str):
-
+    commands = cmd.split(" ")
+    text = commands[0]
     if(text == "help"):
         print(help_hint)
     elif text in tool_map.keys():
-        tool = tool_map[cmd]
-        tool.run()
+        tool = tool_map[text]
+        tool.run(commands)
     else:
         print(f"不支持的命令:{cmd}")
 
 
 if __name__ == '__main__':
-    command_completer = WordCompleter(list(tool_map.keys())+["help", "exit"])
+
+    dics = {'help': None,
+            'exit': None, }
+    for command in tool_map.keys():
+        dics[command] = tool_map[command].get_complete()
+    command_completer = NestedCompleter.from_nested_dict(dics)
+
     print("欢迎使用FishBot配置工具")
     print(help_hint)
-    text = prompt('请输入命令(help查看帮助): ', completer=command_completer)
-    while text != "exit":
+    while True:
+        text = prompt('fishbot>>', completer=command_completer,
+                      bottom_toolbar=bottom_toolbar)
+        if(text == "exit"):
+            print("再见!记得关注鱼香ROS哦~")
+            break
         command_parse(text)
-        text = prompt('请输入命令(help查看帮助): ', completer=command_completer)

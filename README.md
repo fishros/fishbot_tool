@@ -14,3 +14,6 @@
 软件环境相关
 1.安装基础环境(fish_protocol&&fishbot-motion-driver&laser-driver)
 
+```
+docker run -it --rm --privileged -v /dev:/dev -v `pwd`:`pwd` -w `pwd` -p 2001:2001 fishros2/fishbot-tool python main.py
+```
