@@ -1,6 +1,7 @@
 from curses import flash
 from rich import print
 from fishbot_tool.flash import Tool as ToolEspFlash
+from fishbot_tool.config import Tool as ToolConfig
 from prompt_toolkit.completion import NestedCompleter
 from prompt_toolkit import prompt
 from prompt_toolkit import prompt
@@ -13,10 +14,12 @@ def bottom_toolbar():
 
 tool_map = {
     "flash": ToolEspFlash(),
+    "config": ToolConfig(),
 }
 
 help_hint = f"""
-- flash : 烧录FishBot固件 (主板&雷达)
+- flash  : 烧录FishBot固件 (主板&雷达)
+- config : 配置WIFI&电机等
 """
 # - config: 配置FishBot
 

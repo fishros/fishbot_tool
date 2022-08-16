@@ -7,7 +7,7 @@
 安装好Docker,在你的终端输入下面代码，既可使用
 
 ```
-docker run -it --rm --privileged -v /dev:/dev fishros2/fishbot-tool 
+docker run -it --rm --privileged -v /dev:/dev fishros2/fishbot-tool python main.py
 ```
 ## 设计思考
 
