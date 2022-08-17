@@ -24,7 +24,7 @@ RUN git clone https://github.91chi.fun/https://github.com/fishros/fish_protocol.
 #install libfishbot
 RUN git clone https://github.91chi.fun/https://github.com/fishros/fishbot-motion-driver.git -b v1.0.0.20220717 \
     && cd fishbot-motion-driver && mkdir build  && cd build \
-    && cmake .. && make -j8 install \
+    && cmake .. && make -j7 install \
     && cp libfishbot.so /fishbot
 
 COPY fishbot_tool /fishbot_tool/fishbot_tool

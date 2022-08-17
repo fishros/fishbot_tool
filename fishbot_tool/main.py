@@ -26,6 +26,9 @@ help_hint = f"""
 
 def command_parse(cmd: str):
     commands = cmd.split()
+    if len(commands) == 0:
+        print(help_hint)
+        return
     text = commands[0]
     if(text == "help"):
         print(help_hint)
@@ -34,6 +37,7 @@ def command_parse(cmd: str):
         tool.run(commands)
     else:
         print(f"不支持的命令:{cmd}")
+
 
 def main():
     dics = {'help': None,
@@ -51,6 +55,7 @@ def main():
             print("再见!记得关注鱼香ROS哦~")
             break
         command_parse(text)
+
 
 if __name__ == '__main__':
     main()
