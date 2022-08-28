@@ -1,9 +1,9 @@
+from time import sleep, time
 import serial
-import libfishbot as fishbot
 import sys
-from time import time
 sys.path.append('/fishbot')
 sys.path.append('fishbot_tool/libs/')
+import libfishbot as fishbot
 
 
 def get_fishbot_by_uart(port: str, baudrate: int):
@@ -18,21 +18,24 @@ def get_fishbot_by_uart(port: str, baudrate: int):
     # fishbot.destory()
 
 
-def config_laser_wifi(ssid: str, pswd: str, port: str,  baudrate=76800, timeout=1):
-    ser = serial.Serial(port, baudrate, timeout)
-    ser.open()
+def config_laser_wifi(ssid: str, pswd: str, port: str,  baudrate=76800):
+    ser = serial.Serial(port, baudrate)
     config_str = f"config,wifi,{ssid},{pswd}\n"
     print(f"send {config_str} to {ser.port}")
     ser.write(config_str.encode())
-    recv = ser.readline()
+    sleep(2)
+    recv = ser.read_all()
     print(recv.decode())
+    ser.close()
 
 
-def config_laser_proto_udp_client(ip: str, server_port, port: str, baudrate=76800, timeout=1):
-    ser = serial.Serial(port, baudrate, timeout)
-    ser.open()
+def config_laser_proto_udp_client(ip: str, server_port, port: str, baudrate=76800):
+    ser = serial.Serial(port, baudrate)
     config_str = f"config,proto,udp_client,{ip},{server_port}\n"
     print(f"send {config_str} to {ser.port}")
     ser.write(config_str.encode())
-    recv = ser.readline()
+    sleep(2)
+    recv = ser.read_all()
     print(recv.decode())
+    ser.close()
+

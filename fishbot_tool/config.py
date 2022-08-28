@@ -6,6 +6,7 @@ from prompt_toolkit.shortcuts import yes_no_dialog
 from rich import print
 from fishbot_tool.data import get_all_device
 from fishbot_tool.fishbot import get_fishbot_by_uart
+from fishbot_tool.fishbot import config_laser_proto_udp_client,config_laser_wifi
 # result = yes_no_dialog(
 #     title='Yes/No dialog example',
 #     text='Do you want to confirm?').run()
@@ -55,10 +56,24 @@ class Tool():
         flash esp8266 auto_detect https://fishros.org.cn/forum/assets/uploads/files/1657479890115-fishbot_laser_driver.v1.0.0.220628.bin
         """
         print(commands)
+        if commands[1]=="fishbot":
+            self.config_fishbot(commands)
+        elif commands[1]=="laser":
+            self.config_laser(commands)
+
+
+    def config_laser(self, commands):
+        if commands[3] == "wifi":
+            config_laser_wifi(commands[4], commands[5],commands[2])
+        if commands[3] == "proto":
+            config_laser_proto_udp_client(ip=commands[5],server_port=commands[6],port=commands[2],baudrate=76800)
+
+
+    def config_fishbot(self, commands):
         if commands[3] == "wifi":
             self.config_wifi(commands)
         if commands[3] == "proto":
-            self.config_wifi(commands)
+            self.config_proto(commands)
 
     def config_proto(self, commands):
         bot = get_fishbot_by_uart(commands[2], 115200)
