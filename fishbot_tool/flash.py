@@ -16,12 +16,12 @@ class Tool():
 
     def get_complete(self):
         """
-          'esp32': {
+          'fishbot': {
                 "auto_detect": {
                     "v1.0.0": None,
                 },
             },
-            'esp8266': {
+            'laser': {
                 "auto_detect": {
                     "v1.0.0": None,
                 },
@@ -32,8 +32,8 @@ class Tool():
         for d in devices:
             devices_map[d] = None
         result = {
-            'esp32': devices_map,
-            'esp8266': devices_map,
+            'fishbot': devices_map,
+            'laser': devices_map,
         }
         return result
 
@@ -44,11 +44,12 @@ class Tool():
          --after hard_reset write_flash -z --flash_mode dio --flash_freq 40m --flash_size 2MB 0x0 /home/mouse/code/github/fishbot-laser-control/build/bootloader/bootloader.bin 0x10000
          /home/mouse/code/github/fishbot-laser-control/build/uart2udp.bin 0x8000 /home/mouse/code/github/fishbot-laser-control/build/partitions_singleapp.bin
         """
+        chip_map = {"laser":"esp8266","fishbot":"esp32"}
         if len(commands) != 4:
             print(
                 "指令错误\n示例:\n\tflash 芯片名称(esp8266|esp32) 端口号(/dev/ttyXXX) 固件地址(https://xxx)")
             return
-        chip = commands[1]
+        chip = chip_map[commands[1]]
         port = commands[2]
         url = commands[3]
         os.system(f"wget {url} -O {chip}.bin")

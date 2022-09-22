@@ -66,7 +66,7 @@ class Tool():
         if commands[3] == "wifi":
             config_laser_wifi(commands[4], commands[5],commands[2])
         if commands[3] == "proto":
-            config_laser_proto_udp_client(ip=commands[5],server_port=commands[6],port=commands[2],baudrate=76800)
+            config_laser_proto_udp_client(ip=commands[5],server_port=commands[6],port=commands[2],baudrate=115200)
 
 
     def config_fishbot(self, commands):

@@ -18,7 +18,7 @@ def get_fishbot_by_uart(port: str, baudrate: int):
     # fishbot.destory()
 
 
-def config_laser_wifi(ssid: str, pswd: str, port: str,  baudrate=76800):
+def config_laser_wifi(ssid: str, pswd: str, port: str,  baudrate=115200):
     ser = serial.Serial(port, baudrate)
     config_str = f"config,wifi,{ssid},{pswd}\n"
     print(f"send {config_str} to {ser.port}")
@@ -29,7 +29,7 @@ def config_laser_wifi(ssid: str, pswd: str, port: str,  baudrate=76800):
     ser.close()
 
 
-def config_laser_proto_udp_client(ip: str, server_port, port: str, baudrate=76800):
+def config_laser_proto_udp_client(ip: str, server_port, port: str, baudrate=115200):
     ser = serial.Serial(port, baudrate)
     config_str = f"config,proto,udp_client,{ip},{server_port}\n"
     print(f"send {config_str} to {ser.port}")

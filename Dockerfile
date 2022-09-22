@@ -28,8 +28,8 @@ RUN git clone https://github.91chi.fun/https://github.com/fishros/fishbot-motion
     && cp libfishbot.so /fishbot
 
 COPY fishbot_tool /fishbot_tool/fishbot_tool
-WORKDIR /fishbot_tool/fishbot_tool
 ENV PYTHONPATH /fishbot_tool
+WORKDIR /fishbot_tool/fishbot_tool
 # ENTRYPOINT ["python","main.py"]
 
 # docker build -t fishros2/fishbot-tool .
