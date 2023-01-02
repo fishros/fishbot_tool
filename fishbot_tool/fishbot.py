@@ -3,39 +3,54 @@ import serial
 import sys
 sys.path.append('/fishbot')
 sys.path.append('fishbot_tool/libs/')
-import libfishbot as fishbot
 
 
-def get_fishbot_by_uart(port: str, baudrate: int):
-    bot = fishbot.FishBot()
-    bot.set_protocol_serial(port, baudrate)
-    bot.set_motion_model_diff2(0.170, 3293, 0.065 / 2)
-    bot.init()
-    return bot
-    # fishbot.update_wifi_config_sta("JKC", "jkc20210106")
-    # fishbot.restart()
+def config_board(key: str, value: str, port='/dev/ttyUSB0', baudrate=115200):
+    try:
+        ser = serial.Serial(port, baudrate)
+    except:
+        return {"error": "串口打开异常,请检查设备是否被占用"}
 
-    # fishbot.destory()
+    config_str = f"${key}={value}\n".encode()
+    print(f"发送 {str(config_str)} 到 {ser.port}")
+
+    ser.write(config_str)
+    sleep(0.5)
+    recv = ser.read_all().decode()
+    if len(recv) == 0:
+        return {"error": "串口数据异常,请确认设备在配置模式"}
+
+    result = {}
+    lines = recv.splitlines()
+    for line in lines:
+        if len(line) > 0 and line[0] == '$':
+            split_result = line[1:].split("=")
+            if len(split_result) == 2:
+                result[split_result[0]] = split_result[1]
+    ser.close()
+    return result
 
 
-def config_laser_wifi(ssid: str, pswd: str, port: str,  baudrate=115200):
-    ser = serial.Serial(port, baudrate)
-    config_str = f"config,wifi,{ssid},{pswd}\n"
-    print(f"send {config_str} to {ser.port}")
-    ser.write(config_str.encode())
-    sleep(2)
-    recv = ser.read_all()
-    print(recv.decode())
+def restart_device_bt_rst(port):
+    try:
+        ser = serial.Serial(port, baudrate=74880)
+        ser.setRTS(False)
+        ser.setDTR(False)
+        sleep(0.2)
+        ser.setRTS(True)
+        ser.setDTR(True)
+        sleep(0.2)
+        sleep(0.1)
+        return "[提示]发送RTS成功！"
+    except Exception as e:
+        ser.close()
+        print(e)
+        return {"error": "串口打开异常,请检查设备是否被占用"}
     ser.close()
 
 
-def config_laser_proto_udp_client(ip: str, server_port, port: str, baudrate=115200):
-    ser = serial.Serial(port, baudrate)
-    config_str = f"config,proto,udp_client,{ip},{server_port}\n"
-    print(f"send {config_str} to {ser.port}")
-    ser.write(config_str.encode())
-    sleep(2)
-    recv = ser.read_all()
-    print(recv.decode())
-    ser.close()
-
+if __name__ == "__main__":
+    # all_configs = config_board(
+    #     "command", "read_config", port='/dev/ttyUSB0', baudrate=115200)
+    # print(all_configs)
+    print(restart_device_bt_rst('/dev/ttyUSB0'))

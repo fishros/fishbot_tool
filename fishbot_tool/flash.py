@@ -1,68 +1,71 @@
-
-import os
-import esptool
-from prompt_toolkit.shortcuts import yes_no_dialog
-from rich import print
-from fishbot_tool.data import get_all_device
-
-# result = yes_no_dialog(
-#     title='Yes/No dialog example',
-#     text='Do you want to confirm?').run()
+import subprocess
+import time
 
 
-class Tool():
+class CmdTask():
     def __init__(self) -> None:
         pass
 
-    def get_complete(self):
-        """
-          'fishbot': {
-                "auto_detect": {
-                    "v1.0.0": None,
-                },
-            },
-            'laser': {
-                "auto_detect": {
-                    "v1.0.0": None,
-                },
-            },
-        """
-        devices = get_all_device()
-        devices_map = {}
-        for d in devices:
-            devices_map[d] = None
-        result = {
-            'fishbot': devices_map,
-            'laser': devices_map,
-        }
-        return result
+    def run(self, command, cwd):
+        self.sub = subprocess.Popen(command,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE,
+                                    cwd=cwd,
+                                    shell=True)
 
-    def run(self, commands: list):
-        """
-        flash esp8266 auto_detect https://fishros.org.cn/forum/assets/uploads/files/1657479890115-fishbot_laser_driver.v1.0.0.220628.bin
-        python /esp/ESP8266_RTOS_SDK/components/esptool_py/esptool/esptool.py --chip esp8266 --port /dev/ttyUSB0 --baud 115200 --before default_reset
-         --after hard_reset write_flash -z --flash_mode dio --flash_freq 40m --flash_size 2MB 0x0 /home/mouse/code/github/fishbot-laser-control/build/bootloader/bootloader.bin 0x10000
-         /home/mouse/code/github/fishbot-laser-control/build/uart2udp.bin 0x8000 /home/mouse/code/github/fishbot-laser-control/build/partitions_singleapp.bin
-        """
-        chip_map = {"laser":"esp8266","fishbot":"esp32"}
-        if len(commands) != 4:
-            print(
-                "指令错误\n示例:\n\tflash 芯片名称(esp8266|esp32) 端口号(/dev/ttyXXX) 固件地址(https://xxx)")
-            return
-        chip = chip_map[commands[1]]
-        port = commands[2]
-        url = commands[3]
-        os.system(f"wget {url} -O {chip}.bin")
-        result = yes_no_dialog(
-            title='确认进入下载模式',
-            text='请按住BOOT按键,并点击RST重启进入下载模式').run()
-        
-        os.system(
-            f"esptool.py -p {port} -b 460800 --before default_reset --after hard_reset --chip {chip}  write_flash --flash_mode dio --flash_size detect --flash_freq 40m 0x00 {chip}.bin")
-        print("固件写入完成..")
+    def getlog(self,callback=None):
+        # stdout_line = self.sub.stdout.readline().decode("utf-8")
+        # stderr_line = self.sub.stderr.readline().decode("utf-8")
+        stdout_line = ""
+        for line in iter(self.sub.stdout.readline,'b'):
+            line = line.rstrip().decode('utf8')
+            if callback:
+                print(line)
+                callback(line)
+            # 你的操作
+            if(subprocess.Popen.poll(self.sub) is not None):
+                if(line==""):
+                    break
 
-    def flash_8266(self):
-        """
-        docker run -it --rm --privileged -v=/dev:/dev  -v `pwd`:`pwd` -w `pwd` fishros2/fishbot-tool esptool.py -p /dev/ttyUSB0 -b 460800 --before default_reset --after hard_reset --chip esp8266  write_flash --flash_mode dio --flash_size detect --flash_freq 40m 0x1000 fishbot_laser_control_v1.0.0.2022-08-05.bin
-        """
-        pass
+        for line in iter(self.sub.stderr.readline,'b'):
+            line = line.rstrip().decode('utf8')
+            if callback:
+                print(line)
+                callback(line)
+            # 你的操作
+            if(subprocess.Popen.poll(self.sub) is not None):
+                if(line==""):
+                    break
+
+    def getlogs(self):
+        out = []
+        lines = self.sub.stdout.readlines()
+        for line in lines:
+            line = line.decode("utf-8").strip("\n")
+            out.append(line)
+            time.sleep(0.01)
+        lines = self.sub.stderr.readlines()
+        for line in lines:
+            line = line.decode("utf-8").strip("\n")
+            out.append(line)
+            time.sleep(0.01)
+
+        logstr = ""
+        for log in out:
+            logstr += log
+        return logstr
+
+    def is_finish(self):
+        if self.sub.poll() == None:
+            return -1
+        return self.sub.poll()
+
+
+if __name__ == "__main__":
+    cmd = CmdTask()
+    cmd.run("wget https://fishros.org.cn/forum/assets/uploads/files/1672542988816-fishbot_motion_control_v1.0.0.230101.bin -O esp32.bin",
+            "/home/fishros/code/fishbot_tool/fishbot_tool")
+    while cmd.is_finish() == None:
+        print(cmd.getlog())
+
+    print(cmd.getlogs())
