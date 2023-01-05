@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>FishBot配置工具 fishros.org.cn</string>
+   <string>FishBot配置工具(VCODE) fishros.org.cn </string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="groupBox">

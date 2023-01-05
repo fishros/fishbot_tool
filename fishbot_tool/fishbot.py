@@ -1,4 +1,4 @@
-from time import sleep, time
+import time
 import serial
 import sys
 sys.path.append('/fishbot')
@@ -13,10 +13,18 @@ def config_board(key: str, value: str, port='/dev/ttyUSB0', baudrate=115200):
 
     config_str = f"${key}={value}\n".encode()
     print(f"发送 {str(config_str)} 到 {ser.port}")
-
     ser.write(config_str)
-    sleep(0.5)
-    recv = ser.read_all().decode()
+    start_time_timeout = time.time()
+    recv_avaliable_data = False
+    while (time.time()-start_time_timeout < 5) and (not recv_avaliable_data):
+        print("start recv")
+        recv = ser.read_all().decode()
+        print(f"recv temp:{recv}")
+        time.sleep(0.5)
+        if len(recv) > 0:
+            print(f"recv avaliable data :{recv}")
+            recv_avaliable_data = True
+
     if len(recv) == 0:
         return {"error": "串口数据异常,请确认设备在配置模式"}
 
@@ -28,6 +36,8 @@ def config_board(key: str, value: str, port='/dev/ttyUSB0', baudrate=115200):
             if len(split_result) == 2:
                 result[split_result[0]] = split_result[1]
     ser.close()
+    if len(result) == 0:
+        return {"error": "串口数据异常,请确认设备在配置模式"}
     return result
 
 
@@ -36,17 +46,16 @@ def restart_device_bt_rst(port):
         ser = serial.Serial(port, baudrate=74880)
         ser.setRTS(False)
         ser.setDTR(False)
-        sleep(0.2)
+        time.sleep(0.2)
         ser.setRTS(True)
         ser.setDTR(True)
-        sleep(0.2)
-        sleep(0.1)
+        time.sleep(0.2)
+        time.sleep(0.1)
         return "[提示]发送RTS成功！"
     except Exception as e:
         ser.close()
         print(e)
         return {"error": "串口打开异常,请检查设备是否被占用"}
-    ser.close()
 
 
 if __name__ == "__main__":

@@ -207,7 +207,13 @@ class FishBotTool():
         result = config_board(
             key, value, port=port, baudrate=115200)
 
+
         self.put_log(f"收到结果{result}")
+        if 'error' in result.keys():
+            self.put_log(f"[错误]读取到配置项失败{str(result)}")
+            return
+
+
         if len(result) > 0 and result['result'] == 'ok':
             self.put_log(f"[提示]配置{key}={value}成功！")
             self.current_configs[key] = value
@@ -220,7 +226,7 @@ class FishBotTool():
 
     def update_log(self, text):
         self.log_text = str(time.strftime(
-            "%Y-%m-%d %H:%M:%S", time.localtime()))+" > "+text
+            "%Y-%m-%d %H:%M:%S", time.localtime()))+" > "+str(text)
         print(self.log_text)
         self.form.system_log.append(self.log_text)
 
