@@ -78,7 +78,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>小鱼提示      固件地址请到：https://fishros.org.cn/forum/topic/368 获取</string>
+      <string>当前默认最新固件|其他获取固件地:https://fishros.org.cn/forum/topic/368</string>
      </property>
     </widget>
    </widget>

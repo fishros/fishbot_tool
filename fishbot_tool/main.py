@@ -55,6 +55,7 @@ class FishBotTool():
         self.click_scan_config_button()
         self.form.deviceTypeComboBox.currentIndexChanged.connect(
             self.choose_device_callback)
+        self.choose_device_callback()
 
     def restart_device(self):
         port = self.form.devicesComboBox.currentText()
