@@ -96,6 +96,7 @@ class FishBotTool():
             self.put_log("固件下载完成！")
         else:
             self.put_log("[错误]固件下载失败，请检查地址或网络。。")
+            return
 
         self.put_log("开始烧录固件...")
         self.cmd_task = CmdTask()
