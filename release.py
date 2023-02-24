@@ -27,6 +27,6 @@ def release_docker():
     os.system(f"docker build -t {tag} .")
     os.system(f"docker push {tag}")
     replace("fishbot_tool/main.ui", version_code, "VCODE")
-
+    print(f"请更新指令>xhost + && sudo docker run -it --rm --privileged -v /dev:/dev -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY {tag} python3 main.py")
 
 release_docker()

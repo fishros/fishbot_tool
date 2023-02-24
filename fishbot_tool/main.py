@@ -4,7 +4,6 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication, QDialog
 from PySide6.QtCore import Qt, QTimer, Slot
-from PyQt5.QtGui import QTextCursor
 
 
 import time
