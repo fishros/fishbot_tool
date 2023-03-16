@@ -2,7 +2,7 @@
 FROM ubuntu:22.04
 
 
-# COPY docs/docker/sources.list /etc/apt/sources.list
+COPY docs/docker/sources.list /etc/apt/sources.list
 RUN apt update 
 RUN apt install python3 -y
 RUN apt install cmake libboost-dev libboost-dev  libgtest-dev   libboost-thread-dev  libboost-python-dev  libpython3-dev -y
