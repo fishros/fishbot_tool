@@ -4,7 +4,7 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication, QDialog
 from PySide6.QtCore import Qt, QTimer, Slot
-
+from PyQt6.QtGui import QTextCursor
 
 import time
 import threading
@@ -13,7 +13,7 @@ from queue import Queue
 from flash import CmdTask
 from data import get_all_device, get_version_data
 from fishbot import config_board, restart_device_bt_rst
-
+from fishserial import SerialCommunication
 
 class FishBotTool():
     def __init__(self) -> None:
@@ -34,6 +34,11 @@ class FishBotTool():
             self.click_scan_config_button)
         self.form.configButton.clicked.connect(self.click_config_button)
         self.form.restartDeviceButton.clicked.connect(self.restart_device)
+        self.form.binUseFirstTest.clicked.connect(self.click_first_test)
+        self.form.binUseAllTest.clicked.connect(self.click_second_test)
+
+        self.form.openSerial.clicked.connect(self.click_open_serial)
+        self.form.closeSerial.clicked.connect(self.click_close_serial)
 
         self.devices_map = {"motion_board": "esp32", "laser_board": "esp8266"}
         self.board_map = {0: "motion_board", 1: "laser_board"}
@@ -50,13 +55,17 @@ class FishBotTool():
         self._timer.start()
         self.second_update = False
 
+        self.fish_serial = SerialCommunication()
+
         self.click_fresh_device_port()
         self.click_scan_config_button()
         self.form.deviceTypeComboBox.currentIndexChanged.connect(
             self.choose_device_callback)
         self.choose_device_callback()
 
+
     def restart_device(self):
+        self.click_close_serial()
         port = self.form.devicesComboBox.currentText()
         if len(port) == 0:
             self.put_log(f"[错误]检测当前端口号为空,请重新选择端口号！")
@@ -67,9 +76,11 @@ class FishBotTool():
         self.log_queue.put(log)
 
     def download(self):
+        self.click_close_serial()
         threading.Thread(target=self.download_thread).start()
 
     def download_thread(self):
+        self.click_close_serial()
         port = self.form.devicesComboBox.currentText()
         if len(port) == 0:
             self.put_log(f"[错误]检测当前端口号为空,请重新选择端口号！")
@@ -108,6 +119,30 @@ class FishBotTool():
         else:
             self.put_log("[错误]固件写入失败，请检查日志或重试。。。")
 
+    def click_first_test(self):
+        self.form.binAddress.setText('https://fishros.org.cn/forum/assets/uploads/files/1673172530308-fishbot_imu_test_v1.0.0.230108.bin')
+
+    def click_second_test(self):
+        self.form.binAddress.setText('https://fishros.org.cn/forum/assets/uploads/files/1673188368626-fishbot_motion_board_test_v1.0.0.230108.bin')
+
+
+    def click_open_serial(self):
+        def receive_callback(data):
+            # print("Received data:", data)
+            self.update_serial_log(data)
+        self.fish_serial.set_receive_callback(receive_callback)
+
+        port = self.form.devicesComboBox.currentText()
+        if len(port) == 0:
+            self.put_log(f"[错误]检测当前端口号为空,请重新选择端口号！")
+            return
+
+        self.fish_serial.open_port(port, 115200, 1)
+
+
+    def click_close_serial(self):
+        self.fish_serial.close_port()
+
     def click_about(self):
         # webbrowser.open("https://fishros.com/")
         pass
@@ -136,6 +171,7 @@ class FishBotTool():
         self.form.devicesComboBox.setCurrentIndex(0)
 
     def scan_device_config(self):
+        self.click_close_serial()
         port = self.form.devicesComboBox.currentText()
         if len(port) == 0:
             self.put_log(f"[错误]清先选择端口号，并进入配置模式！")
@@ -183,6 +219,7 @@ class FishBotTool():
         self.scan_device_config()
 
     def click_config_button(self):
+        self.click_close_serial()
         key = self.form.configKeyComboBox.currentText()
         if len(key) == 0:
             self.put_log(f"[错误]请先扫描并填写配置！")
@@ -230,6 +267,17 @@ class FishBotTool():
             "%Y-%m-%d %H:%M:%S", time.localtime()))+" > "+str(text)
         print(self.log_text)
         self.form.system_log.append(self.log_text)
+        self.form.system_log.setFocus()
+        self.form.system_log.moveCursor(QTextCursor.MoveOperation.End)
+
+
+    def update_serial_log(self, text):
+        self.serial_text = str(time.strftime(
+            "%Y-%m-%d %H:%M:%S", time.localtime()))+" > "+str(text)
+        # print(self.serial_text)
+        self.form.serialRx.append(self.serial_text)
+        self.form.serialRx.setFocus()
+        self.form.serialRx.moveCursor(QTextCursor.MoveOperation.End)
 
     @Slot()
     def handleTimeoutLog(self):

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>809</width>
-    <height>904</height>
+    <width>1778</width>
+    <height>961</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
       <x>10</x>
       <y>160</y>
       <width>781</width>
-      <height>121</height>
+      <height>191</height>
      </rect>
     </property>
     <property name="title">
@@ -79,6 +79,32 @@
      </property>
      <property name="text">
       <string>当前默认最新固件|其他获取固件地:https://fishros.org.cn/forum/topic/368</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="binUseAllTest">
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>140</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>全测固件</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="binUseFirstTest">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>140</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>初测固件</string>
      </property>
     </widget>
    </widget>
@@ -190,7 +216,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>470</y>
+      <y>520</y>
       <width>791</width>
       <height>381</height>
      </rect>
@@ -213,7 +239,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>300</y>
+      <y>370</y>
       <width>781</width>
       <height>151</height>
      </rect>
@@ -294,6 +320,60 @@
      </property>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="groupBox_5">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>10</y>
+      <width>961</width>
+      <height>891</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>串口工具</string>
+    </property>
+    <widget class="QTextEdit" name="serialRx">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>941</width>
+       <height>791</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="closeSerial">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>40</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>关闭串口</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="openSerial">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>打开串口</string>
+     </property>
+    </widget>
+   </widget>
+   <zorder>groupBox_5</zorder>
+   <zorder>groupBox</zorder>
+   <zorder>groupBox_2</zorder>
+   <zorder>groupBox_3</zorder>
+   <zorder>groupBox_4</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
@@ -301,7 +381,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>809</width>
+     <width>1778</width>
      <height>28</height>
     </rect>
    </property>
