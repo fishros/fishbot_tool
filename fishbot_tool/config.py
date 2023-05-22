@@ -2,8 +2,8 @@
 import os
 from time import sleep
 import esptool
-from prompt_toolkit.shortcuts import yes_no_dialog
-from rich import print
+# from prompt_toolkit.shortcuts import yes_no_dialog
+# from rich import print
 from fishbot_tool.data import get_all_device
 from fishbot_tool.fishbot import get_fishbot_by_uart
 from fishbot_tool.fishbot import config_laser_proto_udp_client,config_laser_wifi

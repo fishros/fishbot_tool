@@ -1,6 +1,21 @@
 # 配置工具
 
 
+## 源码使用
+
+首先克隆代码到本地，接着安装 PyQt6,PySide6,pyserial,esptool
+```
+sudo apt install python3-pip
+sudo pip3 install PyQt6 PySide6 pyserial esptool -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+接着执行
+
+```
+cd fishbot_tool/fishbot_tool/
+sudo python3 main.py
+```
+
 
 ## 快速使用
 
@@ -9,6 +24,8 @@
 ```
 docker run -it --rm --privileged -v /dev:/dev fishros2/fishbot-tool python main.py
 ```
+
+
 ## 设计思考
 
 ```
