@@ -35,8 +35,8 @@ class FishBotTool():
         self.form.configButton.clicked.connect(self.click_config_button)
         self.form.restartDeviceButton.clicked.connect(self.restart_device)
 
-        self.devices_map = {"motion_board": "esp32", "laser_board": "esp8266"}
-        self.board_map = {0: "motion_board", 1: "laser_board"}
+        self.devices_map = {"motion_board": "esp32", "laser_board": "esp8266","motion_board_4driver":"esp32"}
+        self.board_map = {0: "motion_board", 1: "laser_board",2:"motion_board_4driver"}
         self.devices2board_map = {"motion_board": 0, "laser_board": 1}
         self.board = "motion_board"  # motion_board | laser_board
         self.current_configs = {}
@@ -57,6 +57,9 @@ class FishBotTool():
         self.choose_device_callback()
 
     def restart_device(self):
+        """
+        重新启动设备
+        """
         port = self.form.devicesComboBox.currentText()
         if len(port) == 0:
             self.put_log(f"[错误]检测当前端口号为空,请重新选择端口号！")
