@@ -13,7 +13,7 @@ sudo pip3 install PyQt6 PySide6 pyserial esptool -i https://pypi.tuna.tsinghua.e
 
 ```
 cd fishbot_tool/fishbot_tool/
-sudo python3 main.py
+sudo DISPLAY=unix$DISPLAY python3 main.py
 ```
 
 
