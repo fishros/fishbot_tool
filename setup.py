@@ -1,4 +1,4 @@
-from fishbot_tool.__init__ import __version__
+from tool.__init__ import __version__
 
 try:
     from setuptools import setup
@@ -32,7 +32,6 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'fishbot_tool = fishbot_tool.main:main',
         ]
     },
     packages=['fishbot_tool'],
