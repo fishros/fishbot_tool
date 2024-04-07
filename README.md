@@ -15,10 +15,10 @@
 
 ### 2.Docker使用
 
-首先确保你的电脑安装了Docker，然后直接运行以下命令（注意，最新版本需要到release页面查看）：
+首先确保你的电脑安装了Docker，然后直接运行以下命令（注意，最新版本需要到[release](https://github.com/fishros/fishbot_tool/releases)页面查看）：
 
 ```
-xhost + && sudo docker run -it --rm --privileged -v /dev:/dev -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY fishros2/fishbot-tool:v1.0.0.20240219 python3 main.py
+xhost + && sudo docker run -it --rm --privileged -v /dev:/dev -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY fishros2/fishbot_tool:v1.0.0.beta
 ```
 
 ### 3.源码使用
