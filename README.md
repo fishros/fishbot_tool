@@ -3,6 +3,7 @@
 支持设备：
 - FishBot二驱板
 - FishBot四驱动板
+- FishBot雷达转接板
 - FishBot_Camera无线摄像头
 
 

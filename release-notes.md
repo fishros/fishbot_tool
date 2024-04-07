@@ -1,9 +1,6 @@
 版本更新：
-- [feat]发布Linux可执行文件
-- [feat]发布Windows可执行文件
-- [feat]增加固件下载进度提示
-- [feat]支持填写本地固件路径下载
-- [feat]添加无界面版本fishbot_tool_cli.py
+- [fix]修复无FishBot Cmaera选项问题
+
 
 版本说明：
 - alpha:内部测试版本（不建议使用）

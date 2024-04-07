@@ -35,9 +35,9 @@ class FishBotTool():
         self.form.restartDeviceButton.clicked.connect(self.restart_device)
         self.window.setFixedSize(self.window.size())
 
-        self.devices_map = {"motion_board": "esp32", "laser_board": "esp8266","motion_board_4driver":"esp32"}
-        self.board_map = {0: "motion_board", 1: "laser_board",2:"motion_board_4driver"}
-        self.devices2board_map = {"motion_board": 0, "laser_board": 1}
+        self.devices_map = {"motion_board": "esp32", "laser_board": "esp8266","motion_board_4driver":"esp32","camera_board":"esp32"}
+        self.board_map = {0: "motion_board", 1: "laser_board",2:"motion_board_4driver",3:"camera_board"}
+        self.devices2board_map = {"motion_board": 0, "laser_board": 1,"motion_board_4driver":2,"camera_board":3}
         self.board = "motion_board"  # motion_board | laser_board
         self.current_configs = {}
 
@@ -159,6 +159,7 @@ class FishBotTool():
     def choose_device_callback(self):
         self.put_log(f"[操作]切换设备类型{self.form.deviceTypeComboBox.currentText()}")
         board_bin = self.download.get_version_data()
+        # print(board_bin)
         board = self.board_map[self.form.deviceTypeComboBox.currentIndex()]
         self.form.binAddress.setText(board_bin[board])
 

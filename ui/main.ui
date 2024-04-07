@@ -163,6 +163,11 @@
        <string>FishBot四驱板|MicroROS四驱板</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>FishBot Camera无线摄像头</string>
+      </property>
+     </item>
     </widget>
     <widget class="QLabel" name="label_4">
      <property name="geometry">
