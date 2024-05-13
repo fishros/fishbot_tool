@@ -159,9 +159,9 @@ class FishBotTool():
     def choose_device_callback(self):
         self.put_log(f"[操作]切换设备类型{self.form.deviceTypeComboBox.currentText()}")
         board_bin = self.download.get_version_data()
-        # print(board_bin)
-        board = self.board_map[self.form.deviceTypeComboBox.currentIndex()]
-        self.form.binAddress.setText(board_bin[board])
+        if board_bin: # fix: https://fishros.org.cn/forum/topic/2502
+            board = self.board_map[self.form.deviceTypeComboBox.currentIndex()]
+            self.form.binAddress.setText(board_bin[board])
 
     def choose_config_callback(self):
         key = self.form.configKeyComboBox.currentText()

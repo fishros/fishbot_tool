@@ -1,5 +1,5 @@
 版本更新：
-- [fix]修复无FishBot Cmaera选项问题
+- [fix]修复获取固件失败后程序崩溃问题:https://fishros.org.cn/forum/topic/2502/
 
 
 版本说明：
