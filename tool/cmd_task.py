@@ -14,8 +14,6 @@ class CmdTask():
                                     shell=True)
 
     def getlog(self,callback=None):
-        # stdout_line = self.sub.stdout.readline().decode("utf-8")
-        # stderr_line = self.sub.stderr.readline().decode("utf-8")
         stdout_line = ""
         for line in iter(self.sub.stdout.readline,'b'):
             line = line.rstrip().decode('utf8', errors="ignore")
