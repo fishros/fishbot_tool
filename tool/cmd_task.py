@@ -11,12 +11,14 @@ class CmdTask():
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE,
                                     cwd=cwd,
-                                    shell=True)
+                                    shell=True,
+                                    bufsize=1,  # Line buffered
+                                    universal_newlines=True)
 
     def getlog(self,callback=None):
         stdout_line = ""
         for line in iter(self.sub.stdout.readline,'b'):
-            line = line.rstrip().decode('utf8', errors="ignore")
+            line = line.rstrip()#.decode('utf8', errors="ignore")
             if callback:
                 print(line)
                 callback(line)
@@ -26,7 +28,7 @@ class CmdTask():
                     break
 
         for line in iter(self.sub.stderr.readline,'b'):
-            line = line.rstrip().decode('utf8', errors="ignore")
+            line = line.rstrip()#.decode('utf8', errors="ignore")
             if callback:
                 print(line)
                 callback(line)

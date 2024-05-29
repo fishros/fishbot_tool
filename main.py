@@ -7,11 +7,13 @@ from PyQt6.QtCore import QTimer
 import time
 import threading
 from queue import Queue
-from tool.esp_helper import ESPToolHelper
 from tool.network import FishBotFirmwareDownloader
+from devices.device_helper import DeviceHelper,Device
+from devices.board_helper import BoardHelper
 
 import os
 CURRENT_DIR = os.path.dirname(__file__) 
+os.environ['FISHBOT_CURRENT_DIR'] = CURRENT_DIR
 
 class FishBotTool():
     def __init__(self) -> None:
@@ -49,35 +51,49 @@ class FishBotTool():
         self._timer.start()
         self.second_update = False
 
-        self.esp_tool = ESPToolHelper(self.put_log)
         self.download = FishBotFirmwareDownloader(self.put_log)
-        # self.start_thread = threading.Thread(target=self.first_startup_operate)
-        # self.start_thread.start()
+        self.device_helper = DeviceHelper(self.put_log)
+        self.board_helper = BoardHelper(self.put_log)
 
-    def first_startup_operate(self):
         self.click_fresh_device_port()
-        # self.click_scan_config_button()
+        self.form.deviceTypeComboBox.clear()
+        self.form.deviceTypeComboBox.addItems(self.board_helper.get_boards_name())
         self.form.deviceTypeComboBox.currentIndexChanged.connect(
             self.choose_device_callback)
-        self.choose_device_callback()
         
-    def restart_device(self):
-        port = self.form.devicesComboBox.currentText()
-        if len(port) == 0:
+        self.refresh_ui = False
+        self.download.get_version_data(self.recv_version_data_callback,is_async=True)
+    
+    def recv_version_data_callback(self,version_data):
+        for device_name in self.board_helper.get_boards_name():
+            board = self.board_helper.get_board(device_name)
+            if board.board_id in version_data.keys():
+                for version in version_data[board.board_id]:
+                    if version['version']=='latest':
+                        board.set_default_url(version['url'])
+        self.refresh_ui = True
+    def get_current_device_and_board(self):
+        device_str = self.form.devicesComboBox.currentText()
+        board_str = self.form.deviceTypeComboBox.currentText()
+        device,board = None,None
+        if len(device_str) == 0:
             self.put_log(f"[错误]检测当前端口号为空,请重新选择端口号！")
-            return
-        self.put_log(self.esp_tool.restart_device_bt_rst(port))
+        else:
+            device = self.device_helper.get_device(device_str)
+        board = self.board_helper.get_board(board_str)
+        return device,board
+    def restart_device(self):
+        device,board = self.get_current_device_and_board()
+        board.reset(device)
 
     def put_log(self, log):
         self.log_queue.put(log)
 
     def download(self):
         threading.Thread(target=self.download_thread).start()
-
     def download_thread(self):
-        port = self.form.devicesComboBox.currentText()
-        if len(port) == 0:
-            self.put_log(f"[错误]检测当前端口号为空,请重新选择端口号！")
+        device,board = self.get_current_device_and_board()
+        if not device or not board:
             return
 
         url = self.form.binAddress.text()
@@ -85,22 +101,16 @@ class FishBotTool():
             self.put_log(f"[错误]检测当前固件地址为空,请输入固件地址！")
             return
         
-        board = self.board_map[self.form.deviceTypeComboBox.currentIndex()]
-        chip = self.devices_map[board]
-        
         firmware_name = os.path.basename(url)
-        self.put_log(f"[提示]准备从{url}下载固件到{port}对应芯片为{chip}")
+        self.put_log(f"[提示]准备从{url}下载固件到{device}")
         path = os.path.join(CURRENT_DIR,firmware_name)
         if url.startswith('http'):
             firmware_path = self.download.download_firmware(url,path)
         else:
             firmware_path = url
+        # self.put_log(f"[提示]开始烧录固件{firmware_path}")
+        board.write_flash(device,firmware_path)
 
-        self.put_log(f"[提示]开始烧录固件{firmware_path}")
-        if self.esp_tool.write_flash(port,460800,chip,firmware_path,cwd=CURRENT_DIR):
-            self.put_log("[提示]固件写入完成！")
-        else:
-            self.put_log("[错误]固件写入失败，请检查日志或重试。。。")
 
     def click_about(self):
         Form, Window = uic.loadUiType(f"{CURRENT_DIR}/ui/about.ui")
@@ -119,50 +129,31 @@ class FishBotTool():
         window.exec()
 
     def click_fresh_device_port(self):
-        devices = self.esp_tool.get_all_device()
+        devices = self.device_helper.get_all_devices()
         self.update_log(f"[提示]获取到当前系统设备 {str(devices)}")
         self.form.devicesComboBox.clear()
-        self.form.devicesComboBox.addItems(devices)
+        self.form.devicesComboBox.addItems(devices.keys())
         self.form.devicesComboBox.setCurrentIndex(0)
 
     def scan_device_config(self):
-        port = self.form.devicesComboBox.currentText()
-        if len(port) == 0:
-            self.put_log(f"[错误]清先选择端口号，并进入配置模式！")
+        device,board = self.get_current_device_and_board()
+        if not device or not board:
             return
-        all_configs = self.esp_tool.config_board(
-            "command", "read_config", port=port, baudrate=115200)
-
+        all_configs = board.get_all_config(device)
         self.form.configKeyComboBox.clear()
-        if 'error' in all_configs.keys():
-            self.put_log(f"[错误]读取到配置项失败{str(all_configs)}")
+        if not all_configs:
             return
-
-        if 'board' in all_configs.keys():
-            self.board = all_configs['board']
-            self.put_log(f"[提示]获取到当前设备为{self.board}")
-            board = self.board_map[self.form.deviceTypeComboBox.currentIndex()]
-            if self.board != board:
-                self.form.deviceTypeComboBox.setCurrentIndex(
-                    self.devices2board_map[self.board])
-
-            del all_configs['board']
-
         self.current_configs.clear()
         self.current_configs = all_configs
-
         for key in all_configs.keys():
             value = all_configs[key]
             self.put_log(f"[提示]读取到配置项{key}->{value}")
             self.form.configKeyComboBox.addItem(key)
-
     def choose_device_callback(self):
         self.put_log(f"[操作]切换设备类型{self.form.deviceTypeComboBox.currentText()}")
-        board_bin = self.download.get_version_data()
-        if board_bin: # fix: https://fishros.org.cn/forum/topic/2502
-            board = self.board_map[self.form.deviceTypeComboBox.currentIndex()]
-            self.form.binAddress.setText(board_bin[board])
-
+        device,board = self.get_current_device_and_board()
+        # if board.default_bin_url: # fix: https://fishros.org.cn/forum/topic/2502
+        self.form.binAddress.setText(board.default_bin_url)
     def choose_config_callback(self):
         key = self.form.configKeyComboBox.currentText()
         if key in self.current_configs.keys():
@@ -194,25 +185,15 @@ class FishBotTool():
         if value == self.current_configs[key]:
             self.put_log(f"[警告]配置值和当前设备值相同")
 
-        result = self.esp_tool.config_board(
-            key, value, port=port, baudrate=115200)
-
-
-        self.put_log(f"收到结果{result}")
-        if 'error' in result.keys():
-            self.put_log(f"[错误]读取到配置项失败{str(result)}")
+        device,board = self.get_current_device_and_board()
+        if not device or not board:
             return
-
-
-        if len(result) > 0 and result['result'] == 'ok':
-            self.put_log(f"[提示]配置{key}={value}成功！")
+        
+        if board.config(key, value,device):
             self.current_configs[key] = value
-        else:
-            self.put_log(f"[警告]配置{key}={value}失败！")
 
     def show(self):
         self.window.show()
-        self.first_startup_operate()
         self.app.exec()
 
     def update_log(self, text):
@@ -228,6 +209,10 @@ class FishBotTool():
             text = self.log_queue.get()
             if len(text.strip())>0:
                 self.update_log(text)
+        if self.refresh_ui:
+            self.refresh_ui = False
+            self.choose_device_callback()
+
 
 
 if __name__ == "__main__":
