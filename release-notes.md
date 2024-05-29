@@ -1,5 +1,6 @@
 版本更新：
-- [fix]修复获取固件失败后程序崩溃问题:https://fishros.org.cn/forum/topic/2502/
+- [feat]重构整体架构，支持多个类型主控的开发板（STM32&ESP32）
+- [feat]添加超声波模块的串口下载hex的支持
 
 
 版本说明：
