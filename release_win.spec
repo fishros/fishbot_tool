@@ -20,7 +20,7 @@ a = Analysis(
     ['main.py'],
     pathex=['/home/fishros/github/fishbot_tool/'],
     binaries=[],
-    datas=[('esptool\\esptool_win64.exe', 'esptool'),('ui\\about.ui', 'ui'),('ui\\main.ui', 'ui'),('ui\\taobao.ui', 'ui'),('ui\\assert\\fishros.jpg', 'ui\\assert'),('ui\\assert\\taobao.jpeg', 'ui\\assert'),],
+    datas=[('esptool\\esptool_win64.exe', 'esptool'),('stm32tool\\stm32flash_win64.exe', 'stm32tool'),('ui\\about.ui', 'ui'),('ui\\main.ui', 'ui'),('ui\\taobao.ui', 'ui'),('ui\\assert\\fishros.jpg', 'ui\\assert'),('ui\\assert\\taobao.jpeg', 'ui\\assert'),],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

@@ -33,7 +33,7 @@ a = Analysis(
     ['main.py'],
     pathex=[''],
     binaries=[],
-    datas=[('./esptool/esptool_linux_amd64', 'esptool'),('./ui/about.ui', 'ui'), ('./ui/main.ui', 'ui'), ('./ui/taobao.ui', 'ui'), ('./ui/assert/fishros.jpg', 'ui/assert'),('./ui/assert/taobao.jpeg', 'ui/assert')],
+    datas=[('./esptool/esptool_linux_amd64', 'esptool'),('./stm32tool/stm32flash_linux_amd64', 'stm32tool'),('./ui/about.ui', 'ui'), ('./ui/main.ui', 'ui'), ('./ui/taobao.ui', 'ui'), ('./ui/assert/fishros.jpg', 'ui/assert'),('./ui/assert/taobao.jpeg', 'ui/assert')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
