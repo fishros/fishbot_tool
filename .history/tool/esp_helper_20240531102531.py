@@ -68,7 +68,7 @@ class ESPToolHelper:
             self.logger("[提示]开始烧录固件...")
             self.cmd_task = CmdTask()   
             esptool = select_esptool()
-            cmd = f"{esptool} -p {serial_port} -b {baud_rate} --before default_reset --after hard_reset --chip {chip} write_flash --flash_mode dio --flash_size detect --flash_freq 40m 0x00 {firmware_image}"
+            cmd = f"{esptool} -p /dev/ttyUSB0 -b {baud_rate} --before default_reset --after hard_reset --chip {chip} write_flash --flash_mode dio --flash_size detect --flash_freq 40m 0x00 {firmware_image}"
             print('----------------------------------------------')
             print(cmd)
             self.cmd_task.run(cmd, cwd=cwd)
