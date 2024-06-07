@@ -19,12 +19,9 @@ class SerialDevice(Device):
     def reset_by_rst(self):
         try:
             ser = serial.Serial(self.device_name, baudrate=74880)
-            ser.setRTS(False)
             ser.setDTR(False)
             time.sleep(0.1)
-            ser.setRTS(True)
             ser.setDTR(True)
-            time.sleep(0.1)
             time.sleep(0.05)
             return {'code':0,'msg':'[提示]发送RTS成功！'}
         except Exception as e:
