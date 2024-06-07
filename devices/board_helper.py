@@ -3,7 +3,7 @@ from devices.fishbot_laser_board import BoardFishBotLaser
 from devices.fishbot_motion_board import BoardFishBotMotion
 from devices.fishbot_motion_four_driver_board import BoardFishBotMotion4D
 from devices.fishbot_ulsound_board import BoardFishBotUlsound
-
+from devices.ros2_multi_protocol_board import BoardROS2MultiProtocol
 
 class BoardHelper:
     def __init__(self,logger) -> None:
@@ -15,6 +15,7 @@ class BoardHelper:
             BoardFishBotMotion,
             BoardFishBotMotion4D,
             BoardFishBotUlsound,
+            BoardROS2MultiProtocol,
         ]
 
         for boardc in board_class:
