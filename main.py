@@ -6,6 +6,8 @@ from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer
 import time
 import threading
+import signal
+import sys
 from queue import Queue
 from tool.network import FishBotFirmwareDownloader
 from devices.device_helper import DeviceHelper,Device
@@ -37,10 +39,6 @@ class FishBotTool():
         self.form.restartDeviceButton.clicked.connect(self.restart_device)
         self.window.setFixedSize(self.window.size())
 
-        self.devices_map = {"motion_board": "esp32", "laser_board": "esp8266","motion_board_4driver":"esp32","camera_board":"esp32"}
-        self.board_map = {0: "motion_board", 1: "laser_board",2:"motion_board_4driver",3:"camera_board"}
-        self.devices2board_map = {"motion_board": 0, "laser_board": 1,"motion_board_4driver":2,"camera_board":3}
-        self.board = "motion_board"  # motion_board | laser_board
         self.current_configs = {}
 
         self.log_queue = Queue()
@@ -63,7 +61,13 @@ class FishBotTool():
         
         self.refresh_ui = False
         self.download.get_version_data(self.recv_version_data_callback,is_async=True)
-    
+        # Set up signal handler for graceful exit
+        signal.signal(signal.SIGINT, self.signal_handler)
+
+    def signal_handler(self, sig, frame):
+        print("Exiting...")
+        self.app.quit()
+        sys.exit(0)
     def recv_version_data_callback(self,version_data):
         for device_name in self.board_helper.get_boards_name():
             board = self.board_helper.get_board(device_name)
