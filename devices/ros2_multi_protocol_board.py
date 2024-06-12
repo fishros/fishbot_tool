@@ -4,7 +4,7 @@ from devices.device_helper import Device
 
 class BoardROS2MultiProtocol(Board):
     def __init__(self,logger):
-        super().__init__('ROS2 多协议传输控制板','ros2_multi_protocol',logger=logger)
+        super().__init__('ROS 2多协议传输控制板','ros2_multi_protocol',logger=logger)
         
     def write_flash(self,device: Device,bin_file=None):
         """

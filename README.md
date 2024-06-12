@@ -5,6 +5,8 @@
 - FishBot四驱动板
 - FishBot雷达转接板
 - FishBot_Camera无线摄像头
+- FishROS ROS2多协议传输控制板
+- FishROS 多路超声波控制板
 
 
 ## 使用方法(可视化版)
