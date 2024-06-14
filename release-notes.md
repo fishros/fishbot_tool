@@ -1,5 +1,5 @@
 版本更新：
-- [feat] 增加ROS2多协议传输控制器
+- [fix] 修复 ModuleNotFoundError: No module named 'yaml'
 
 
 版本说明：
