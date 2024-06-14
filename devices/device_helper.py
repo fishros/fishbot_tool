@@ -58,7 +58,7 @@ class DeviceHelper:
                 self.device_index += 1
         elif os.name == 'nt':  # Windows
             for port in port_list:
-                devices[self.device_index] = SerialDevice(self.device_index, port.device)
+                device = SerialDevice(self.device_index, port.device)
                 self.devices[str(device)] = device
                 self.device_index += 1
         return self.devices
