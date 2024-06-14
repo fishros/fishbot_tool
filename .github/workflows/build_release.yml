@@ -16,7 +16,7 @@ jobs:
         run: |
           sudo apt update && sudo apt install libqt6* libxcb-cursor-dev -y
           python -m pip install --upgrade pip
-          pip install pyinstaller pyserial requests PyQt6 
+          pip install pyinstaller pyserial requests PyQt6 pyyaml
           
       - name: Build with PyInstaller
         run: pyinstaller release_linux.spec
@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller pyserial requests PyQt6 
+          pip install pyinstaller pyserial requests PyQt6 pyyaml
           
       - name: Build with PyInstaller
         run: pyinstaller release_win.spec
