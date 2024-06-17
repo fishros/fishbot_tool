@@ -4,7 +4,7 @@ from devices.device_helper import Device
 
 class BoardFishBotUlsound(Board):
     def __init__(self,logger):
-        super().__init__('FishBot 多路超声波控制板','fishbot_ulsound',logger=logger)
+        super().__init__('FishBot 多路超声波控制板','fishros_ulsound',logger=logger)
         
     def write_flash(self,device: Device,bin_file=None):
         """
