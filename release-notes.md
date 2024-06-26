@@ -1,5 +1,5 @@
 版本更新：
-- [fix] 修复 ModuleNotFoundError: No module named 'yaml'
+- [fix] 修复扫描配置造成异常重启
 
 
 版本说明：
