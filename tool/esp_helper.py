@@ -25,9 +25,13 @@ class ESPToolHelper:
 
     def config_board(self, key: str, value: str, port='/dev/ttyUSB0', baudrate=115200):
         try:
-            ser = serial.Serial(port, baudrate)
-        except:
-            return {"error": "串口打开异常,请检查设备是否被占用"}
+            ser = serial.Serial()
+            ser.port = port
+            ser.baudrate = baudrate
+            ser.rts = False # fix restart board
+            ser.open()
+        except Exception as e:
+            return {"error": "串口打开异常,请检查设备是否被占用","info":str(e)}
 
         config_str = f"${key}={value}\n".encode()
         self.logger(f"[提示]发送 {str(config_str)} 到 {ser.port}")
