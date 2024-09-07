@@ -64,7 +64,7 @@ class ESPToolHelper:
             return {"error": "串口数据异常,请确认设备在配置模式"}
         return result
 
-    def write_flash(self, serial_port, baud_rate, chip, firmware_image,cwd=None):
+    def write_flash(self, serial_port, baud_rate, chip, firmware_image,cwd=None,flash_freq='40m'):
         try:
             if not cwd:
                 cwd = os.environ['FISHBOT_CURRENT_DIR']
@@ -72,7 +72,7 @@ class ESPToolHelper:
             self.logger("[提示]开始烧录固件...")
             self.cmd_task = CmdTask()   
             esptool = select_esptool()
-            cmd = f"{esptool} -p {serial_port} -b {baud_rate} --before default_reset --after hard_reset --chip {chip} write_flash --flash_mode dio --flash_size detect --flash_freq 40m 0x00 {firmware_image}"
+            cmd = f"{esptool} -p {serial_port} -b {baud_rate} --before default_reset --after hard_reset --chip {chip} write_flash --flash_mode dio --flash_size detect --flash_freq {flash_freq} 0x00 {firmware_image}"
             print('----------------------------------------------')
             print(cmd)
             self.cmd_task.run(cmd, cwd=cwd)

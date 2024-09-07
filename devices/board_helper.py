@@ -1,4 +1,5 @@
 from devices.fishbot_camera_baord import BoardFishBotCamera
+from devices.fishbot_camera_baord_v2 import BoardFishBotCameraV2
 from devices.fishbot_laser_board import BoardFishBotLaser
 from devices.fishbot_motion_board import BoardFishBotMotion
 from devices.fishbot_motion_four_driver_board import BoardFishBotMotion4D
@@ -11,6 +12,7 @@ class BoardHelper:
         self.boards = {}
         board_class = [
             BoardFishBotCamera,
+            BoardFishBotCameraV2,
             BoardFishBotLaser,
             BoardFishBotMotion,
             BoardFishBotMotion4D,
