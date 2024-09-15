@@ -24,17 +24,17 @@ jobs:
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: build-artifacts-${{ github.run_number }}-${{ github.sha }}
           path: dist
 
-      - name: Copy Bin For Docker
-        run: mkdir dist-for-docker && cp $(ls -1 dist/*) dist-for-docker/fishbot_tool_linux_amd64
+      - name: Copy Bin
+        run: mkdir dist-bin && cp $(ls -1 dist/*) dist-bin/fishbot_tool_linux_amd64
 
-      - name: Archive build artifacts docker
+      - name: Archive build artifacts bin
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts-for-docker
-          path: dist-for-docker
+          name: build-artifacts-bin-${{ github.run_number }}-${{ github.sha }}
+          path: dist-bin
 
 
   build-windows:
