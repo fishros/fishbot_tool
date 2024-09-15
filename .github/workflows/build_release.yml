@@ -54,7 +54,7 @@ jobs:
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: build-artifacts-${{ github.run_number }}-${{ github.sha }}
           path: dist
 
   build-cli-version:
@@ -69,7 +69,7 @@ jobs:
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: build-artifacts-${{ github.run_number }}-${{ github.sha }}
           path: dist
 
   
@@ -84,7 +84,7 @@ jobs:
     - name: Download built artifacts
       uses: actions/download-artifact@v4
       with:
-        name: build-artifacts-for-docker
+        name: build-artifacts-${{ github.run_number }}-${{ github.sha }}-for-docker
         path: ./dist-for-docker
 
     - name: Docker login
@@ -106,7 +106,7 @@ jobs:
         - name: Download built artifacts
           uses: actions/download-artifact@v4
           with:
-            name: build-artifacts
+            name: build-artifacts-${{ github.run_number }}-${{ github.sha }}
             path: ./dist
 
         - name: Update release notes
