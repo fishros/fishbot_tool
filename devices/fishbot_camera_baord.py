@@ -18,8 +18,12 @@ class BoardFishBotCamera(Board):
         if not device:
             self.logger("[错误]设备为空，请选择设备")
             return
-        self.logger("[提示]通过RST重启完成")
-        device.reset_by_rst()
+        ret = device.reset_by_rst()
+        if ret['code']==1:
+            self.logger(ret['msg'])
+        else:
+            self.logger("[提示]通过RST重启完成")
+
 
     def config(self, key, value,device:Device):
         result = self.esp_helper.config_board(

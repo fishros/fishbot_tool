@@ -28,6 +28,7 @@ xhost + && sudo docker run -it --rm --privileged -v /dev:/dev -v /tmp/.X11-unix:
 ```
 sudo apt install python3-pip
 sudo pip3 install PyQt6 requests pyserial esptool -i https://pypi.tuna.tsinghua.edu.cn/simple
+sudo apt install libxcb-cursor0
 ```
 
 接着执行（注意Linux下要给串口设备权限）

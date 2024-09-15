@@ -4,7 +4,7 @@ from devices.device_helper import Device
 
 class BoardFishBotCameraV2(Board):
     def __init__(self,logger):
-        super().__init__('FishBot Camera无线摄像头V2','camera_boardv2',logger=logger)
+        super().__init__('FishBot Camera视觉模组','camera_boardv2',logger=logger)
         
     def write_flash(self,device: Device,bin_file=None):
         """
@@ -18,8 +18,11 @@ class BoardFishBotCameraV2(Board):
         if not device:
             self.logger("[错误]设备为空，请选择设备")
             return
-        self.logger("[提示]通过RST重启完成")
-        device.reset_by_rst()
+        ret = device.reset_by_rst()
+        if ret['code']==1:
+            self.logger(ret['msg'])
+        else:
+            self.logger("[提示]通过RST重启完成")
 
     def config(self, key, value,device:Device):
         result = self.esp_helper.config_board(

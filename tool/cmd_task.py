@@ -22,7 +22,6 @@ class CmdTask():
             if callback:
                 print(line)
                 callback(line)
-            # 你的操作
             if(subprocess.Popen.poll(self.sub) is not None):
                 if(line==""):
                     break
@@ -41,12 +40,12 @@ class CmdTask():
         out = []
         lines = self.sub.stdout.readlines()
         for line in lines:
-            line = line.decode("utf-8", errors="ignore").strip("\n")
+            line = line.rstrip()
             out.append(line)
             time.sleep(0.01)
         lines = self.sub.stderr.readlines()
         for line in lines:
-            line = line.decode("utf-8", errors="ignore").strip("\n")
+            line = line.rstrip()
             out.append(line)
             time.sleep(0.01)
 
@@ -64,6 +63,8 @@ class CmdTask():
 
 if __name__=='__main__':
     task = CmdTask()
-    task.run(r'powershell ../esptool/esptool_win64.exe -p COM12 -b 460800 --before default_reset --after hard_reset --chip esp32 write_flash --flash_mode dio --flash_size detect --flash_freq 40m 0x00 C:\Users\wjm\AppData\Local\Temp\_MEI106162\1710596193698-fishbot_motion_control_v1.0.0.240316.bin')
-    def getlog(msg): print(msg)
-    task.getlog(getlog)
+    # task.run(r'powershell ../esptool/esptool_win64.exe -p COM12 -b 460800 --before default_reset --after hard_reset --chip esp32 write_flash --flash_mode dio --flash_size detect --flash_freq 40m 0x00 C:\Users\wjm\AppData\Local\Temp\_MEI106162\1710596193698-fishbot_motion_control_v1.0.0.240316.bin')
+    task.run('dpkg -l | grep brltty')
+    # def getlog(msg): print(msg)
+    ret = task.getlogs().find('brltty')>0
+    print(ret)
