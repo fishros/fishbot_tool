@@ -93,10 +93,10 @@ class ESPToolHelper:
             self.cmd_task.getlog(update_log)
 
             if self.cmd_task.is_finish() == 0:
-                # self.logger("[提示]固件写入完成！")
+                self.logger("[提示]固件写入完成！")
                 return True
             else:
-                # self.logger("[错误]固件写入失败，请检查日志或重试。。。")
+                self.logger("[错误]固件写入失败，请检查日志或重试。。。")
                 return False
         except Exception as e:
             print(e)
