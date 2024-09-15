@@ -22,7 +22,7 @@ jobs:
         run: pyinstaller release_linux.spec
 
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: dist
@@ -31,7 +31,7 @@ jobs:
         run: mkdir dist-for-docker && cp $(ls -1 dist/*) dist-for-docker/fishbot_tool_linux_amd64
 
       - name: Archive build artifacts docker
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-for-docker
           path: dist-for-docker
@@ -52,7 +52,7 @@ jobs:
         run: pyinstaller release_win.spec
 
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: dist
@@ -67,7 +67,7 @@ jobs:
         run: mkdir dist && mv fishbot_tool_cli.py dist/
 
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: dist
@@ -82,7 +82,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Download built artifacts
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: build-artifacts-for-docker
         path: ./dist-for-docker
@@ -104,7 +104,7 @@ jobs:
           uses: actions/checkout@v4
 
         - name: Download built artifacts
-          uses: actions/download-artifact@v2
+          uses: actions/download-artifact@v4
           with:
             name: build-artifacts
             path: ./dist
