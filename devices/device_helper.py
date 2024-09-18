@@ -51,7 +51,6 @@ class DeviceHelper:
         sudo apt remove brltty 
     输入命令解除占用后重新插拔设备生效
     ===========================================""")
-        .
         if len(self.devices) == 0:
             self.logger('[提示]无可用串口，请插入串口设备')
         return self.devices
