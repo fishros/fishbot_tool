@@ -68,17 +68,18 @@ class ESPToolHelper:
         return result
 
     def write_flash(self, serial_port, baud_rate, chip, firmware_image,cwd=None,flash_freq='40m'):
-        try:
-            ser = serial.Serial()
-            ser.port = serial_port
-            ser.baudrate = 115200
-            ser.rts = False # fix restart board
-            ser.open()
-        except Exception as e:
-            e_str = str(e)
-            if e_str.find('Permission')>0 or e_str.find('权限')>0:
-                self.logger(f'[警告]串口打开异常,请检查设备权限,手动单次添加可使用命令:\n    sudo chmod 666 {serial_port}\n彻底解决:\n    sudo usermod -a -G dialout $USER')
-            return False
+        # try:
+        #     ser = serial.Serial()
+        #     ser.port = serial_port
+        #     ser.baudrate = 115200
+        #     ser.rts = False # fix restart board
+        #     ser.open()
+        # except Exception as e:
+        #     e_str = str(e)
+        #     print(e_str)
+        #     if e_str.find('Permission')>0 or e_str.find('权限')>0:
+        #         self.logger(f'[警告]串口打开异常,请检查设备权限,手动单次添加可使用命令:\n    sudo chmod 666 {serial_port}\n彻底解决:\n    sudo usermod -a -G dialout $USER')
+        #     return False
         try:
             if not cwd:
                 cwd = os.environ['FISHBOT_CURRENT_DIR']
