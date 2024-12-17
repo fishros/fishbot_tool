@@ -4,6 +4,7 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer
+from PyQt6.QtGui import QShortcut, QKeySequence  # 导入快捷键相关类
 import time
 import threading
 import signal
@@ -23,14 +24,16 @@ class FishBotTool():
         self.app = QApplication([])
         self.window = Window()
         self.form = Form()
+        self.download_thread_status='finish'
 
 
         self.form.setupUi(self.window)
-        self.form.downloadButton.clicked.connect(self.download)
+        self.form.downloadButton.clicked.connect(self.click_download)
         self.form.freshDevicePortButton.clicked.connect(
             self.click_fresh_device_port)
         self.form.action_fishros.triggered.connect(self.click_about)
         self.form.action_shop.triggered.connect(self.click_shop)
+        self.form.action_flash_and_config.triggered.connect(self.click_flash_and_config)
         self.form.configKeyComboBox.currentIndexChanged.connect(
             self.choose_config_callback)
         self.form.scanConfigButton.clicked.connect(
@@ -64,10 +67,25 @@ class FishBotTool():
         # Set up signal handler for graceful exit
         signal.signal(signal.SIGINT, self.signal_handler)
 
+        # 设置 F8 快捷键监听
+        self.shortcut_f8 = QShortcut(QKeySequence("F8"), self.window)
+        self.shortcut_f8.activated.connect(self.on_f8_pressed)
+
+    def on_f8_pressed(self):
+        def callback_flash():
+            device,board = self.get_current_device_and_board()
+            if not device or not board:
+                return
+            for key,value in self.current_configs.items():
+                board.config(key, value,device)
+        self.click_download(callback_flash)
+
+
     def signal_handler(self, sig, frame):
         print("Exiting...")
         self.app.quit()
         sys.exit(0)
+
     def recv_version_data_callback(self,version_data):
         for device_name in self.board_helper.get_boards_name():
             board = self.board_helper.get_board(device_name)
@@ -93,16 +111,26 @@ class FishBotTool():
     def put_log(self, log):
         self.log_queue.put(log)
 
-    def download(self):
-        threading.Thread(target=self.download_thread).start()
-    def download_thread(self):
+    def click_download(self,callback=None):
+        if self.download_thread_status=='finish':
+            threading.Thread(target=self.download_thread,args=(callback,)).start()
+        else:
+            self.put_log(f"[错误]请等待上一个下载进程结束。")
+
+    def download_thread(self,callback=None):
+        self.put_log(f"[提示]下载进程开始")
+        self.download_thread_status = 'start'
         device,board = self.get_current_device_and_board()
         if not device or not board:
+            self.download_thread_status = 'finish'
+            self.put_log(f"[提示]下载进程结束")
             return
 
         url = self.form.binAddress.text()
         if len(url) == 0:
             self.put_log(f"[错误]检测当前固件地址为空,请输入固件地址！")
+            self.download_thread_status = 'finish'
+            self.put_log(f"[提示]下载进程结束")
             return
         
         firmware_name = os.path.basename(url)
@@ -114,6 +142,10 @@ class FishBotTool():
             firmware_path = url
         # self.put_log(f"[提示]开始烧录固件{firmware_path}")
         board.write_flash(device,firmware_path)
+        self.download_thread_status = 'finish'
+        self.put_log(f"[提示]下载进程结束")
+        if callback:
+            callback()
 
 
     def click_about(self):
@@ -131,6 +163,10 @@ class FishBotTool():
         form.setupUi(window)
         window.show()
         window.exec()
+
+    def click_flash_and_config(self):
+        self.on_f8_pressed()
+
 
     def click_fresh_device_port(self):
         devices = self.device_helper.get_all_devices()
@@ -153,10 +189,12 @@ class FishBotTool():
             value = all_configs[key]
             self.put_log(f"[提示]读取到配置项{key}->{value}")
             self.form.configKeyComboBox.addItem(key)
+
     def choose_device_callback(self):
         self.put_log(f"[操作]切换设备类型{self.form.deviceTypeComboBox.currentText()}")
         device,board = self.get_current_device_and_board()
         # if board.default_bin_url: # fix: https://fishros.org.cn/forum/topic/2502
+
         self.form.binAddress.setText(board.default_bin_url)
     def choose_config_callback(self):
         key = self.form.configKeyComboBox.currentText()

@@ -4,7 +4,7 @@ from devices.device_helper import Device
 
 class BoardFishBotMotion(Board):
     def __init__(self,logger):
-        super().__init__('FishBot 运动控制板','fishbot_motion',logger=logger)
+        super().__init__('FishBot 二驱主控板','fishbot_motion',logger=logger)
         
     def write_flash(self,device: Device,bin_file=None):
         """

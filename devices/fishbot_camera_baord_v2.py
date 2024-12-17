@@ -4,7 +4,7 @@ from devices.device_helper import Device
 
 class BoardFishBotCameraV2(Board):
     def __init__(self,logger):
-        super().__init__('FishBot Camera视觉模组','camera_boardv2',logger=logger)
+        super().__init__('FishBot Camera视觉模组V2.0','camera_boardv2',logger=logger)
         
     def write_flash(self,device: Device,bin_file=None):
         """

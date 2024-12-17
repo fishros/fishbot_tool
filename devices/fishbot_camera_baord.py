@@ -4,7 +4,7 @@ from devices.device_helper import Device
 
 class BoardFishBotCamera(Board):
     def __init__(self,logger):
-        super().__init__('FishBot Camera无线摄像头','fishbot_camera',logger=logger)
+        super().__init__('FishBot ESP32Camera','fishbot_camera',logger=logger)
         
     def write_flash(self,device: Device,bin_file=None):
         """

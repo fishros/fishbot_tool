@@ -2,9 +2,9 @@ from devices.board import Board
 from devices.device_helper import Device
 
 
-class BoardFishBotMotion4D(Board):
+class BoardFishBotMotion4DV2(Board):
     def __init__(self,logger):
-        super().__init__('FishBot 四驱控制板','fishbot_motion_4driver',logger=logger)
+        super().__init__('FishBot 四驱主控板V2','fishbot_motion_4driver_v2',logger=logger)
         
     def write_flash(self,device: Device,bin_file=None):
         """
@@ -12,7 +12,7 @@ class BoardFishBotMotion4D(Board):
         self.esp_tool.write_flash(port,460800,chip,firmware_path,cwd=CURRENT_DIR):
         """
         self.logger(f'[提示]{self.name} 准备烧录固件:{bin_file}')
-        self.esp_helper.write_flash(device.device_name,460800,'esp32',bin_file)
+        self.esp_helper.write_flash(device.device_name,460800,'esp32s3',bin_file,flash_freq='keep')
 
     def reset(self, device: Device):
         if not device:

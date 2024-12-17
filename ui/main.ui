@@ -327,8 +327,15 @@
     </property>
     <addaction name="action_shop"/>
    </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>快捷操作</string>
+    </property>
+    <addaction name="action_flash_and_config"/>
+   </widget>
    <addaction name="menu_about"/>
    <addaction name="menu_shop"/>
+   <addaction name="menu"/>
   </widget>
   <action name="action_fishros">
    <property name="text">
@@ -338,6 +345,11 @@
   <action name="action_shop">
    <property name="text">
     <string>官方店铺</string>
+   </property>
+  </action>
+  <action name="action_flash_and_config">
+   <property name="text">
+    <string>一键下载并写入配置(F8)</string>
    </property>
   </action>
  </widget>

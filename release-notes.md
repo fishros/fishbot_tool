@@ -1,5 +1,8 @@
 版本更新：
-- [feat] 增加FishBotCameraV2版本固件及下载选项
+- [feat] 增加FishBotCameraV4版本固件及下载选项
+- [feat] 矫正各个板子的名称
+- [feat] 增加快捷操作一键下载及配置
+
 
 
 版本说明：
