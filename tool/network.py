@@ -13,6 +13,7 @@ class FishBotFirmwareDownloader:
     def __init__(self, logger):
         self.logger = logger
         self.version_info_url = 'https://fishros.org.cn/forum/api/v3/posts/10390'
+        self.url2localfile = {}
 
     def get_version_data(self, callback=None,is_async=False):
         """
@@ -41,9 +42,20 @@ class FishBotFirmwareDownloader:
         """
         Downloads firmware with progress logs.
         """
+        if firmware_path in self.url2localfile.keys():
+            return self.url2localfile[firmware_path]
+        
         self.logger(f'[提示]检测到固件{firmware_path}在HTTP路径上，开始下载')
-        response = requests.get(firmware_path, stream=True)
-        response.raise_for_status()
+        try:
+            response = requests.get(firmware_path, stream=True)
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            self.logger(f'[错误]下载固件失败，HTTP错误: {str(e)}')
+            return None
+        except requests.exceptions.ConnectionError as e:
+            self.logger(f'[错误]网络错误: {str(e)}')
+            return None
+        
         total_size = int(response.headers.get('content-length', 0))
         bytes_written = 0
         last_print_time = time.time()
@@ -57,6 +69,7 @@ class FishBotFirmwareDownloader:
                         progress = (bytes_written / total_size) * 100 if total_size > 0 else 0
                         self.logger(f'[进度]下载中：{path} - {progress:.2f}%完成')
         self.logger(f'\n[提示]下载完成：{path}')
+        self.url2localfile[firmware_path] = path
         return path
 
 if __name__ == "__main__":

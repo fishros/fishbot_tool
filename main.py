@@ -70,6 +70,18 @@ class FishBotTool():
         # 设置 F8 快捷键监听
         self.shortcut_f8 = QShortcut(QKeySequence("F8"), self.window)
         self.shortcut_f8.activated.connect(self.on_f8_pressed)
+        self.shortcut_f9 = QShortcut(QKeySequence("F9"), self.window)
+        self.shortcut_f9.activated.connect(self.on_f9_pressed)
+
+    def on_f9_pressed(self):
+        def callback_flash():
+            pass
+            # device,board = self.get_current_device_and_board()
+            # if not device or not board:
+                # return
+            # for key,value in self.current_configs.items():
+            #     board.config(key, value,device)
+        self.click_download(callback_flash)
 
     def on_f8_pressed(self):
         def callback_flash():
@@ -140,12 +152,12 @@ class FishBotTool():
             firmware_path = self.download.download_firmware(url,path)
         else:
             firmware_path = url
-        # self.put_log(f"[提示]开始烧录固件{firmware_path}")
-        board.write_flash(device,firmware_path)
-        self.download_thread_status = 'finish'
-        self.put_log(f"[提示]下载进程结束")
-        if callback:
-            callback()
+        if firmware_path:
+            board.write_flash(device,firmware_path)
+            self.download_thread_status = 'finish'
+            self.put_log(f"[提示]下载进程结束")
+            if callback:
+                callback()
 
 
     def click_about(self):
