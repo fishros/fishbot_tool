@@ -3,6 +3,11 @@ import json
 import threading
 import yaml
 import time
+import urllib3
+
+# 关闭不安全请求的警告
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 def parse_yaml_from_json(json_data):
     yaml_content = json_data['response']['content']
     yaml_content = yaml_content.replace("```yaml\n","").replace("```","").strip()
@@ -15,14 +20,15 @@ class FishBotFirmwareDownloader:
         self.version_info_url = 'https://fishros.org.cn/forum/api/v3/posts/10390'
         self.url2localfile = {}
 
-    def get_version_data(self, callback=None,is_async=False):
+    def get_version_data(self, callback=None, is_async=False):
         """
-        Asynchronously retrieves version data using threading.
+        Retrieves version data (with optional async thread).
         """
         def thread_func():
             try:
-                response = requests.get(self.version_info_url)
-                response.raise_for_status()  # Raises stored HTTPError, if one occurred.
+                # 关闭 SSL 验证
+                response = requests.get(self.version_info_url, verify=False, timeout=10)
+                response.raise_for_status()
                 raw_data = response.text
                 version_info = parse_yaml_from_json(json.loads(raw_data))
                 if callback:
@@ -40,14 +46,14 @@ class FishBotFirmwareDownloader:
 
     def download_firmware(self, firmware_path, path):
         """
-        Downloads firmware with progress logs.
+        Downloads firmware with progress logs, skipping SSL verification.
         """
-        if firmware_path in self.url2localfile.keys():
+        if firmware_path in self.url2localfile:
             return self.url2localfile[firmware_path]
         
-        self.logger(f'[提示]检测到固件{firmware_path}在HTTP路径上，开始下载')
+        self.logger(f'[提示]检测到固件 {firmware_path} 在HTTP路径上，开始下载')
         try:
-            response = requests.get(firmware_path, stream=True)
+            response = requests.get(firmware_path, stream=True, verify=False, timeout=10)
             response.raise_for_status()
         except requests.HTTPError as e:
             self.logger(f'[错误]下载固件失败，HTTP错误: {str(e)}')
